@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Publication {
+  id          String   @id @default(cuid())
+  title       String
+  authors     String
+  date        DateTime
+  description String
+  url         String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Education {
+  id          String    @id @default(cuid())
+  institution String
+  degree      String
+  field       String
+  startDate   DateTime
+  endDate     DateTime?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  name      String
+  category  String?
+  level     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Research {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime?
+  status      String    @default("ongoing")
+  tags        String[]
+  url         String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Algorithm {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime?
+  status      String    @default("ongoing")
+  tags        String[]
+  url         String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// Single-row settings — always id = "main"
+model SiteSettings {
+  id              String  @id @default("main")
+  name            String  @default("Marcelo De Martino")
+  role            String  @default("Professor · Researcher")
+  bio             String  @default("Advancing the frontiers of computational research at the intersection of algorithms, mathematics, and applied science.")
+  profileImage    String? // base64 data URL
+  backgroundImage String? // base64 data URL
+}
+
+model Otp {
+  id        String   @id @default(cuid())
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ContactInfo {
+  id          String @id @default("main")
+  email       String @default("")
+  office      String @default("")
+  department  String @default("")
+  officeHours String @default("")
+  university  String @default("")
+  location    String @default("")
+}
