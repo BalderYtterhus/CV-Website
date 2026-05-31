@@ -26,7 +26,7 @@ export default async function RootLayout({
   const hasUserBackground = !!settings?.backgroundImage
 
   return (
-    <html lang="en" className="h-full antialiased">
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body
         className={`${inter.className} min-h-full flex flex-col`}
         style={hasUserBackground ? {
