@@ -22,6 +22,162 @@ Included to demonstrate prompting approach as part of the evaluation criteria.
 
 ---
 
+## Prompt #15 — Implementing OTP email authentication
+
+**Goal:** Turn the OTP concept (Prompt #12) into a working implementation using Resend.
+
+**Prompt:**
+> "yes now it works, so when the website is handed over to him i just have to paste his email address as the admin email, and he can log in?"
+
+**Result:** Confirmed the handover flow. Built the full OTP system: `Otp` Prisma model, `src/lib/otpStore.ts` (`generateCode`, `saveOtp`, `verifyOtp`), `POST /api/auth/sendpassword` route that emails a 6-digit code via Resend, and NextAuth credentials provider that validates the code. `ADMIN_EMAIL` and `RESEND_FROM` added to `.env`.
+
+**Notes:** Code expires after 10 minutes and is one-use. Resend `onboarding@resend.dev` address used for local dev; in production any verified domain address can be used.
+
+---
+
+## Prompt #16 — Deploying to Vercel
+
+**Goal:** Get the project live on a public URL.
+
+**Prompt:**
+> "how can this link up with hosting on vercel"
+
+**Result:** Step-by-step walkthrough: push to GitHub → import in Vercel dashboard → configure environment variables (`DATABASE_URL`, `ADMIN_EMAIL`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`, `RESEND_API_KEY`, `RESEND_FROM`) → deploy. Live URL: `cv-website-ruby-five.vercel.app`.
+
+**Notes:** Three separate bugs surfaced during first deployment and were fixed across subsequent prompts (see #17–#19).
+
+---
+
+## Prompt #17 — Vercel build: serverActions config key
+
+**Goal:** Fix a build failure caused by an unrecognised config key in `next.config.ts`.
+
+**Prompt:**
+> "[build log showing 'Unrecognized key(s) in object: serverActions']"
+
+**Result:** Moved `serverActions: { bodySizeLimit: "10mb" }` under the `experimental` key. Next.js 16 requires server-action config under `experimental`, not at the top level.
+
+**Notes:** Breaking change from earlier Next.js versions. Vercel's build output surfaced this before local builds did because local dev uses a different path.
+
+---
+
+## Prompt #18 — Vercel build: missing Prisma client
+
+**Goal:** Fix a build failure where the generated Prisma client was absent on Vercel.
+
+**Prompt:**
+> "[build failure log — module not found @/generated/prisma]"
+
+**Result:** Added `"postinstall": "prisma generate"` to `package.json`. Vercel runs `npm install` during builds, which triggers `postinstall` and regenerates the client. The `src/generated/` directory is gitignored, so it must be regenerated on the build server.
+
+**Notes:** This is the standard pattern for any project using Prisma with gitignored generated files.
+
+---
+
+## Prompt #19 — Supabase max connections in production
+
+**Goal:** Fix a runtime error where every page load threw `EMAXCONNSESSION: max clients reached`.
+
+**Prompt:**
+> "[runtime logs showing EMAXCONNSESSION error]"
+
+**Result:** Changed `DATABASE_URL` in Vercel environment variables from port `5432` (session mode, max 15 connections) to port `6543` (transaction mode pooler, unlimited). Local `.env` stays on `5432`. Transaction mode pooler is designed for serverless environments where every request creates a new connection.
+
+**Notes:** Critical gotcha for any Supabase + Vercel deployment. Session mode is fine locally; transaction mode is required in production.
+
+---
+
+## Prompt #20 — Design system implementation
+
+**Goal:** Replace the placeholder styling with a professional CV design system delivered as a design handoff package.
+
+**Prompt:**
+> "[Design system zip attachment] inspect the newly added claude code handoff package from claude design, implement the new front end design as described."
+
+**Result:** Full design system implemented: CSS custom property tokens for light and dark themes (`--cv-*`), `@theme inline` to bridge variables to Tailwind utilities, `ThemeProvider` context with localStorage persistence, `BackgroundLayer` (grid / equations / plain patterns), `ThemeToggle` buttons in the navbar, anti-flash inline script in `layout.tsx`, and `suppressHydrationWarning` on `<html>`. All shared admin UI classes added to `globals.css`.
+
+**Notes:** The math equation background and grid backgrounds use pure CSS and SVG — no external images. Anti-flash pattern (inline script + suppressHydrationWarning) is required to prevent both visual flicker and React hydration warnings.
+
+---
+
+## Prompt #21 — Theme toggle buttons not visible
+
+**Goal:** The three background-picker buttons (⊞ ∑ —) and theme toggle (☽/☀) were invisible or extremely faint.
+
+**Prompt:**
+> "i cant see the three buttons"
+
+**Result:** Increased button size to 30×30px, added active state background (`cv-accent-soft`), added a vertical divider between the background pickers and the theme toggle, changed theme icons to ☽ (dark) / ☀ (light) for clarity.
+
+**Notes:** The original color (`var(--cv-meta)`) was too close to the navbar background in both themes. Active state contrast is important on small icon buttons.
+
+---
+
+## Prompt #22 — Hydration mismatch on html element
+
+**Goal:** Eliminate React console errors about a `data-theme` attribute mismatch between server and client.
+
+**Prompt:**
+> "[hydration mismatch error details showing data-theme attribute difference]"
+
+**Result:** Added `suppressHydrationWarning` to the `<html>` tag in `layout.tsx`. The anti-flash inline script sets `data-theme` before React hydrates, so the attribute the browser sees differs from what the server rendered — `suppressHydrationWarning` tells React this is intentional.
+
+**Notes:** This is the correct and documented pattern for theme systems that read from localStorage. The warning is cosmetic but confusing; suppressing it on `<html>` only is precise and safe.
+
+---
+
+## Prompt #23 — Dark mode broken in admin UI and login
+
+**Goal:** Fix dark mode throughout all admin modals, manager components, and the login page, where text was invisible or illegible against dark backgrounds.
+
+**Prompt:**
+> "Lets fix the dark theme problem, make sure that text is contrasted from the dark background."
+
+**Result:** Audited all six admin manager components and the login page. Replaced all hardcoded Tailwind gray classes with CSS variable references. Added ~20 shared admin CSS classes to `globals.css` (`.cv-input`, `.cv-btn-primary`, `.cv-btn-secondary`, `.cv-btn-edit`, `.cv-btn-delete`, `.cv-btn-add`, `.cv-btn-inline`, `.cv-display-card`, `.cv-card-title`, `.cv-empty-card`, `.cv-tag`, `.cv-badge-*`, `.cv-img-section`, `.cv-field-label`, `.cv-divider`). Rewrote all six components to use them.
+
+**Notes:** The shared class approach avoids repeating CSS variable references in every component and makes future theme changes a single-file edit.
+
+---
+
+## Prompt #24 — Implementing soft deletes
+
+**Goal:** Make deletions reversible so the admin cannot accidentally destroy content permanently.
+
+**Prompt:**
+> "how would i go about making soft deletes a real implementation"
+
+**Result:** Added `deletedAt DateTime?` to all five content models in `schema.prisma`. Ran `prisma migrate dev --name add-soft-deletes`. All `delete*` server actions now do `update({ data: { deletedAt: new Date() } })` instead of hard deletes. All `findMany` queries gained `where: { deletedAt: null }`. Added `restore*` server actions and a `permanentlyDelete` action. Built `/admin/trash` page (admin-only, redirects visitors) with a `TrashManager` component showing all soft-deleted items sorted by deletion date, each with Restore and Delete Forever buttons. Added Trash link to the navbar for logged-in admins.
+
+**Notes:** Soft deletes are the standard pattern for content management systems. The trash page makes the feature discoverable without cluttering the main UI.
+
+---
+
+## Prompt #25 — Mobile navbar optimisation
+
+**Goal:** Fix the navbar on small screens where the name was getting crushed and all the links overflowed.
+
+**Prompt:**
+> "The app is now almost finished, we only need to optimalize it for phone view aswell, the main issue with the phone version is that the navbar is to long for the screen, and that the title name in the left upper corner gets pressed in a way. make it so that the navbar is slide-able, instead of being glued to the whole screen."
+
+**Result:** Redesigned navbar for mobile: two-row layout. Top row keeps the site name (muted gray, `text-sm`) and auth/theme controls. All nav links move to a second row that is horizontally scrollable (`overflow-x: auto`, `w-max` inner container). Scrollbar hidden via `.cv-nav-scroll` CSS class with `-webkit-overflow-scrolling: touch` for smooth iOS momentum. Desktop layout unchanged (single row, `sm:hidden` / `hidden sm:flex` breakpoints). First PR opened for the project using the feature branch workflow.
+
+**Notes:** Chose a scrollable strip over a hamburger menu to keep the navbar as a pure Server Component — no client-side toggle state needed. The `w-max` trick on the inner `<nav>` is the key: it makes the nav as wide as its content while the outer container clips to the viewport.
+
+---
+
+## Prompt #26 — Vercel build error: /_not-found prerender
+
+**Goal:** Fix a Vercel build failure where the 404 page crashed because Prisma tried to connect to a database that doesn't exist at build time.
+
+**Prompt:**
+> "[Vercel error: driverAdapterError: DatabaseNotReachable — Export encountered an error on /_not-found/page]"
+
+**Result:** Added `export const dynamic = "force-dynamic"` to `src/app/layout.tsx`. This opts every page — including the special `/_not-found` route — out of static prerendering, so Prisma is only called at request time when a real database connection is available.
+
+**Notes:** All content pages already had `force-dynamic` individually, but the root layout (and the `/_not-found` page it wraps) did not. The error only appeared on Vercel because local builds skip static generation when a live DB is reachable.
+
+---
+
 ## Prompt #1 — Project prompt tracking setup
 
 **Goal:** Establish a system to track all prompts throughout the project so the evaluator can assess prompting skills alongside code output.
