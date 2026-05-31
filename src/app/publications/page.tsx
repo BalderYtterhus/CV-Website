@@ -23,10 +23,8 @@ export default async function PublicationsPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-20">
       <div className="mb-12">
-        <p className="text-sm font-medium text-blue-600 uppercase tracking-widest mb-2">
-          Academic Work
-        </p>
-        <h1 className="text-5xl font-bold text-gray-900">Publications</h1>
+        <p className="cv-eyebrow mb-2">Academic Work</p>
+        <h1 className="text-5xl font-bold" style={{ color: "var(--cv-ink)", letterSpacing: "-0.02em" }}>Publications</h1>
       </div>
       <PublicationManager publications={data} isAdmin={!!session} />
     </main>

@@ -25,11 +25,9 @@ export default async function AlgorithmsPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-20">
       <div className="mb-12">
-        <p className="text-sm font-medium text-blue-600 uppercase tracking-widest mb-2">
-          Computational Work
-        </p>
-        <h1 className="text-5xl font-bold text-gray-900">Algorithms</h1>
-        <p className="text-gray-500 mt-4 max-w-xl">
+        <p className="cv-eyebrow mb-2">Computational Work</p>
+        <h1 className="text-5xl font-bold" style={{ color: "var(--cv-ink)", letterSpacing: "-0.02em" }}>Algorithms</h1>
+        <p className="mt-4 max-w-xl" style={{ color: "var(--cv-muted)" }}>
           Research projects and contributions in algorithm design, analysis, and
           complexity theory.
         </p>

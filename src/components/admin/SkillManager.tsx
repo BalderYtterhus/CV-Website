@@ -75,23 +75,24 @@ export function SkillManager({
       )}
 
       {skills.length === 0 ? (
-        <p className="text-gray-400 text-sm italic">No skills added yet.</p>
+        <p className="text-sm italic" style={{ color: "var(--cv-meta)" }}>No skills added yet.</p>
       ) : (
         <div className="flex flex-col gap-8">
           {Object.entries(byCategory).map(([category, items]) => (
             <div key={category}>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--cv-meta)" }}>
                 {category}
               </p>
               <div className="flex flex-wrap gap-2">
                 {items.map((skill) => (
                   <div key={skill.id} className="relative group/skill flex items-center">
-                    <span className={`border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-700 font-medium hover:border-blue-300 hover:text-blue-700 transition${isAdmin ? " pr-14 cursor-pointer" : ""}`}
+                    <span
+                      className={`cv-pill${isAdmin ? " pr-14 cursor-pointer" : ""}`}
                       onClick={isAdmin ? () => openEdit(skill) : undefined}
                     >
                       {skill.name}
                       {skill.level && (
-                        <span className="ml-1.5 text-xs text-gray-400">· {skill.level}</span>
+                        <span className="cv-pill-meta">· {skill.level}</span>
                       )}
                     </span>
                     {isAdmin && (

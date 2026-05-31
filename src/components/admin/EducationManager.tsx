@@ -79,23 +79,23 @@ export function EducationManager({
       )}
 
       {education.length === 0 ? (
-        <p className="text-gray-400 text-sm italic">No education entries yet.</p>
+        <p className="text-sm italic" style={{ color: "var(--cv-meta)" }}>No education entries yet.</p>
       ) : (
         <div className="flex flex-col gap-5">
           {education.map((edu) => (
             <div key={edu.id} className="flex gap-6 items-start group">
-              <div className="text-sm text-gray-400 w-28 flex-shrink-0 pt-0.5">
+              <div className="text-sm w-28 flex-shrink-0 pt-0.5" style={{ color: "var(--cv-meta)" }}>
                 {new Date(edu.startDate).getFullYear()}
                 {" – "}
                 {edu.endDate ? new Date(edu.endDate).getFullYear() : "Present"}
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold" style={{ color: "var(--cv-ink)" }}>
                   {edu.degree}{edu.field ? `, ${edu.field}` : ""}
                 </p>
-                <p className="text-sm text-gray-500">{edu.institution}</p>
+                <p className="text-sm" style={{ color: "var(--cv-muted)" }}>{edu.institution}</p>
                 {edu.description && (
-                  <p className="text-sm text-gray-400 mt-1">{edu.description}</p>
+                  <p className="text-sm mt-1" style={{ color: "var(--cv-meta)" }}>{edu.description}</p>
                 )}
               </div>
               {isAdmin && (

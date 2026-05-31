@@ -28,11 +28,9 @@ export default async function ContactPage() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-20">
       <div className="mb-12">
-        <p className="text-sm font-medium text-blue-600 uppercase tracking-widest mb-2">
-          Get in Touch
-        </p>
+        <p className="cv-eyebrow mb-2">Get in Touch</p>
         <div className="flex items-center gap-4">
-          <h1 className="text-5xl font-bold text-gray-900">Contact</h1>
+          <h1 className="text-5xl font-bold" style={{ color: "var(--cv-ink)", letterSpacing: "-0.02em" }}>Contact</h1>
           {isAdmin && (
             <ContactManager contact={{
               email: contact.email,
@@ -48,34 +46,34 @@ export default async function ContactPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
         {contact.email && (
-          <div className="border border-gray-200 rounded-xl p-6">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Email</p>
-            <a href={`mailto:${contact.email}`} className="text-gray-900 font-medium hover:text-blue-600 transition">
+          <div className="cv-card">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--cv-meta)" }}>Email</p>
+            <a href={`mailto:${contact.email}`} className="font-medium transition-colors hover:text-cv-accent" style={{ color: "var(--cv-ink)" }}>
               {contact.email}
             </a>
           </div>
         )}
 
         {(contact.office || contact.department) && (
-          <div className="border border-gray-200 rounded-xl p-6">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Office</p>
-            {contact.office && <p className="text-gray-900 font-medium">{contact.office}</p>}
-            {contact.department && <p className="text-sm text-gray-500 mt-1">{contact.department}</p>}
+          <div className="cv-card">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--cv-meta)" }}>Office</p>
+            {contact.office && <p className="font-medium" style={{ color: "var(--cv-ink)" }}>{contact.office}</p>}
+            {contact.department && <p className="text-sm mt-1" style={{ color: "var(--cv-muted)" }}>{contact.department}</p>}
           </div>
         )}
 
         {contact.officeHours && (
-          <div className="border border-gray-200 rounded-xl p-6">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Office Hours</p>
-            <p className="text-gray-900 font-medium">{contact.officeHours}</p>
+          <div className="cv-card">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--cv-meta)" }}>Office Hours</p>
+            <p className="font-medium" style={{ color: "var(--cv-ink)" }}>{contact.officeHours}</p>
           </div>
         )}
 
         {(contact.university || contact.location) && (
-          <div className="border border-gray-200 rounded-xl p-6">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">University</p>
-            {contact.university && <p className="text-gray-900 font-medium">{contact.university}</p>}
-            {contact.location && <p className="text-sm text-gray-500 mt-1">{contact.location}</p>}
+          <div className="cv-card">
+            <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--cv-meta)" }}>University</p>
+            {contact.university && <p className="font-medium" style={{ color: "var(--cv-ink)" }}>{contact.university}</p>}
+            {contact.location && <p className="text-sm mt-1" style={{ color: "var(--cv-muted)" }}>{contact.location}</p>}
           </div>
         )}
       </div>

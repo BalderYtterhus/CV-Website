@@ -47,20 +47,26 @@ export default async function Home() {
   return (
     <main className="max-w-4xl mx-auto px-6 py-20">
 
-      {/* Hero */}
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="flex flex-col md:flex-row items-center gap-12 mb-20">
-        <div className="w-48 h-48 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
-          {settings.profileImage ? (
+
+        {/* Avatar */}
+        <div
+          className="w-48 h-48 rounded-full flex-shrink-0 overflow-hidden"
+          style={{
+            background: `linear-gradient(135deg, var(--cv-avatar-from), var(--cv-avatar-to))`,
+            boxShadow: "var(--cv-card-shadow)",
+          }}
+        >
+          {settings.profileImage && (
             <img src="/api/images/profile" alt="Profile" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-slate-300 to-slate-400" />
           )}
         </div>
+
+        {/* Text */}
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
-            <p className="text-sm font-medium text-blue-600 uppercase tracking-widest">
-              {settings.role}
-            </p>
+            <p className="cv-eyebrow">{settings.role}</p>
             {isAdmin && (
               <SiteSettingsManager settings={{
                 name: settings.name,
@@ -71,22 +77,42 @@ export default async function Home() {
               }} />
             )}
           </div>
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+
+          <h1
+            className="text-5xl font-bold mb-4"
+            style={{ color: "var(--cv-ink)", letterSpacing: "-0.02em", lineHeight: 1.1 }}
+          >
             {settings.name}
           </h1>
-          <p className="text-lg text-gray-500 max-w-xl">
+
+          <p
+            className="text-lg max-w-xl"
+            style={{ color: "var(--cv-muted)", lineHeight: 1.5 }}
+          >
             {settings.bio}
           </p>
+
+          {/* CTA buttons */}
           <div className="flex gap-4 mt-6">
             <Link
               href="/publications"
-              className="bg-gray-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition"
+              style={{
+                background: "var(--cv-btn-primary-bg)",
+                color: "var(--cv-btn-primary-ink)",
+                boxShadow: "var(--cv-card-shadow)",
+              }}
+              className="px-5 py-2.5 rounded-lg text-sm font-medium transition-opacity hover:opacity-80"
             >
               View Publications
             </Link>
             <Link
               href="/contact"
-              className="border border-gray-300 text-gray-700 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
+              style={{
+                background: "var(--cv-btn-secondary-bg)",
+                color: "var(--cv-btn-secondary-ink)",
+                border: "1px solid var(--cv-btn-secondary-border)",
+              }}
+              className="px-5 py-2.5 rounded-lg text-sm font-medium transition-opacity hover:opacity-75"
             >
               Get in Touch
             </Link>
@@ -94,15 +120,25 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Education */}
+      {/* ── Education ────────────────────────────────────────────────────── */}
       <section className="mb-20">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Education</h2>
+        <h2
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--cv-ink)" }}
+        >
+          Education
+        </h2>
         <EducationManager education={eduData} isAdmin={isAdmin} />
       </section>
 
-      {/* Skills */}
+      {/* ── Skills ───────────────────────────────────────────────────────── */}
       <section>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Skills</h2>
+        <h2
+          className="text-2xl font-bold mb-6"
+          style={{ color: "var(--cv-ink)" }}
+        >
+          Skills
+        </h2>
         <SkillManager skills={skillData} isAdmin={isAdmin} />
       </section>
 
