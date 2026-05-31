@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "@/components/Navbar"
 import { prisma } from "@/lib/prisma"
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -32,6 +33,7 @@ export default async function RootLayout({
       >
         <Navbar />
         {children}
+        <Analytics />
       </body>
     </html>
   )
