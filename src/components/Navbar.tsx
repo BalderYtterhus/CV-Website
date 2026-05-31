@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 import LogoutButton from "@/components/LogoutButton"
 import ThemeToggle from "@/components/ThemeToggle"
 
-const links = [
+const NAV_LINKS = [
   { label: "Home",         href: "/" },
   { label: "Research",     href: "/research" },
   { label: "Publications", href: "/publications" },
@@ -19,7 +19,8 @@ export default async function Navbar() {
     prisma.siteSettings.findFirst(),
   ])
 
-  const name = settings?.name ?? "Marcelo De Martino"
+  const name    = settings?.name ?? "Marcelo De Martino"
+  const isAdmin = !!session
 
   return (
     <header
@@ -29,52 +30,104 @@ export default async function Navbar() {
         backdropFilter: "blur(2px)",
         transition: "border-color 150ms ease, box-shadow 150ms ease",
       }}
-      className="w-full px-10 py-4 flex items-center justify-between"
+      className="w-full"
     >
-      <Link
-        href="/"
-        style={{ color: "var(--cv-ink)", letterSpacing: "-0.01em" }}
-        className="font-semibold text-lg transition-colors hover:opacity-80"
+
+      {/* ── Top bar (always visible) ──────────────────────────────────────── */}
+      <div className="flex items-center justify-between px-5 sm:px-10 py-3 sm:py-4">
+
+        {/* Name — muted + small on mobile, full ink + larger on desktop */}
+        <Link
+          href="/"
+          className="font-medium transition-opacity hover:opacity-75 truncate pr-3"
+          style={{ letterSpacing: "-0.01em" }}
+        >
+          <span
+            className="sm:hidden text-sm"
+            style={{ color: "var(--cv-meta)" }}
+          >
+            {name}
+          </span>
+          <span
+            className="hidden sm:inline text-lg font-semibold"
+            style={{ color: "var(--cv-ink)" }}
+          >
+            {name}
+          </span>
+        </Link>
+
+        {/* Right cluster */}
+        <div className="flex items-center gap-4 sm:gap-6 flex-shrink-0">
+
+          {/* Desktop-only nav links */}
+          <nav className="hidden sm:flex items-center gap-6">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                style={{ color: "var(--cv-muted)" }}
+                className="text-sm font-medium transition-colors hover:text-cv-ink"
+              >
+                {link.label}
+              </Link>
+            ))}
+            {isAdmin && (
+              <Link
+                href="/admin/trash"
+                style={{ color: "var(--cv-meta)" }}
+                className="text-sm font-medium transition-colors hover:text-cv-muted"
+              >
+                Trash
+              </Link>
+            )}
+          </nav>
+
+          {/* Auth — always visible */}
+          {session ? (
+            <LogoutButton />
+          ) : (
+            <Link
+              href="/login"
+              style={{ color: "var(--cv-meta)" }}
+              className="text-sm font-medium transition-colors hover:text-cv-muted"
+            >
+              Log in
+            </Link>
+          )}
+
+          {/* Theme + background toggle — always visible */}
+          <ThemeToggle />
+        </div>
+      </div>
+
+      {/* ── Mobile-only scrollable link strip ────────────────────────────── */}
+      <div
+        className="sm:hidden cv-nav-scroll overflow-x-auto"
+        style={{ borderTop: "1px solid var(--cv-border)" }}
       >
-        {name}
-      </Link>
+        <nav className="flex items-center gap-7 px-5 py-2.5 w-max">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              style={{ color: "var(--cv-muted)" }}
+              className="text-sm font-medium whitespace-nowrap transition-colors hover:text-cv-ink"
+            >
+              {link.label}
+            </Link>
+          ))}
+          {isAdmin && (
+            <Link
+              href="/admin/trash"
+              style={{ color: "var(--cv-meta)" }}
+              className="text-sm font-medium whitespace-nowrap transition-colors hover:text-cv-muted"
+            >
+              Trash
+            </Link>
+          )}
+        </nav>
+      </div>
 
-      <nav className="flex items-center gap-6">
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            style={{ color: "var(--cv-muted)" }}
-            className="text-sm font-medium transition-colors hover:text-cv-ink"
-          >
-            {link.label}
-          </Link>
-        ))}
-
-        {session && (
-          <Link
-            href="/admin/trash"
-            style={{ color: "var(--cv-meta)" }}
-            className="text-sm font-medium transition-colors hover:text-cv-muted"
-          >
-            Trash
-          </Link>
-        )}
-
-        {session ? (
-          <LogoutButton />
-        ) : (
-          <Link
-            href="/login"
-            style={{ color: "var(--cv-meta)" }}
-            className="text-sm font-medium transition-colors hover:text-cv-muted"
-          >
-            Log in
-          </Link>
-        )}
-
-        <ThemeToggle />
-      </nav>
     </header>
   )
 }

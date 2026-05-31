@@ -9,6 +9,8 @@ import BackgroundLayer from "@/components/BackgroundLayer"
 
 const inter = Inter({ subsets: ["latin"] })
 
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   title: "Marcelo De Martino",
   description: "Professor | Researcher",
