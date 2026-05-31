@@ -51,6 +51,16 @@ export default async function Navbar() {
           </Link>
         ))}
 
+        {session && (
+          <Link
+            href="/admin/trash"
+            style={{ color: "var(--cv-meta)" }}
+            className="text-sm font-medium transition-colors hover:text-cv-muted"
+          >
+            Trash
+          </Link>
+        )}
+
         {session ? (
           <LogoutButton />
         ) : (

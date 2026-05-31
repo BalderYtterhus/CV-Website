@@ -30,7 +30,13 @@ export async function updatePublication(id: string, data: {
 
 export async function deletePublication(id: string) {
   await requireAdmin()
-  await prisma.publication.delete({ where: { id } })
+  await prisma.publication.update({ where: { id }, data: { deletedAt: new Date() } })
+  revalidatePath("/publications")
+}
+
+export async function restorePublication(id: string) {
+  await requireAdmin()
+  await prisma.publication.update({ where: { id }, data: { deletedAt: null } })
   revalidatePath("/publications")
 }
 
@@ -73,7 +79,13 @@ export async function updateEducation(id: string, data: {
 
 export async function deleteEducation(id: string) {
   await requireAdmin()
-  await prisma.education.delete({ where: { id } })
+  await prisma.education.update({ where: { id }, data: { deletedAt: new Date() } })
+  revalidatePath("/")
+}
+
+export async function restoreEducation(id: string) {
+  await requireAdmin()
+  await prisma.education.update({ where: { id }, data: { deletedAt: null } })
   revalidatePath("/")
 }
 
@@ -110,7 +122,13 @@ export async function updateSkill(id: string, data: {
 
 export async function deleteSkill(id: string) {
   await requireAdmin()
-  await prisma.skill.delete({ where: { id } })
+  await prisma.skill.update({ where: { id }, data: { deletedAt: new Date() } })
+  revalidatePath("/")
+}
+
+export async function restoreSkill(id: string) {
+  await requireAdmin()
+  await prisma.skill.update({ where: { id }, data: { deletedAt: null } })
   revalidatePath("/")
 }
 
@@ -155,7 +173,13 @@ export async function updateResearch(id: string, data: {
 
 export async function deleteResearch(id: string) {
   await requireAdmin()
-  await prisma.research.delete({ where: { id } })
+  await prisma.research.update({ where: { id }, data: { deletedAt: new Date() } })
+  revalidatePath("/research")
+}
+
+export async function restoreResearch(id: string) {
+  await requireAdmin()
+  await prisma.research.update({ where: { id }, data: { deletedAt: null } })
   revalidatePath("/research")
 }
 
@@ -200,8 +224,29 @@ export async function updateAlgorithm(id: string, data: {
 
 export async function deleteAlgorithm(id: string) {
   await requireAdmin()
-  await prisma.algorithm.delete({ where: { id } })
+  await prisma.algorithm.update({ where: { id }, data: { deletedAt: new Date() } })
   revalidatePath("/algorithms")
+}
+
+export async function restoreAlgorithm(id: string) {
+  await requireAdmin()
+  await prisma.algorithm.update({ where: { id }, data: { deletedAt: null } })
+  revalidatePath("/algorithms")
+}
+
+// ─── Trash (permanent delete) ────────────────────────────────────────────────
+
+export async function permanentlyDelete(type: string, id: string) {
+  await requireAdmin()
+  switch (type) {
+    case "publication": await prisma.publication.delete({ where: { id } }); revalidatePath("/publications"); break
+    case "education":   await prisma.education.delete({ where: { id } });   revalidatePath("/"); break
+    case "skill":       await prisma.skill.delete({ where: { id } });       revalidatePath("/"); break
+    case "research":    await prisma.research.delete({ where: { id } });    revalidatePath("/research"); break
+    case "algorithm":   await prisma.algorithm.delete({ where: { id } });   revalidatePath("/algorithms"); break
+    default: throw new Error("Unknown type")
+  }
+  revalidatePath("/admin/trash")
 }
 
 // ─── SiteSettings ────────────────────────────────────────────────────────────

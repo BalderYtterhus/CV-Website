@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic"
 
 export default async function AlgorithmsPage() {
   const [algorithms, session] = await Promise.all([
-    prisma.algorithm.findMany({ orderBy: { startDate: "desc" } }),
+    prisma.algorithm.findMany({ where: { deletedAt: null }, orderBy: { startDate: "desc" } }),
     getServerSession(authOptions),
   ])
 

@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic"
 
 export default async function ResearchPage() {
   const [projects, session] = await Promise.all([
-    prisma.research.findMany({ orderBy: { startDate: "desc" } }),
+    prisma.research.findMany({ where: { deletedAt: null }, orderBy: { startDate: "desc" } }),
     getServerSession(authOptions),
   ])
 

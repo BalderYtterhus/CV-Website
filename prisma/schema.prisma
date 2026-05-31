@@ -8,14 +8,15 @@ datasource db {
 }
 
 model Publication {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   authors     String
   date        DateTime
   description String
   url         String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
 
 model Education {
@@ -28,15 +29,17 @@ model Education {
   description String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
 
 model Skill {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
   category  String?
   level     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
 
 model Research {
@@ -50,6 +53,7 @@ model Research {
   url         String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
 
 model Algorithm {
@@ -63,6 +67,7 @@ model Algorithm {
   url         String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
 
 // Single-row settings — always id = "main"

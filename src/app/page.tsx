@@ -10,8 +10,8 @@ export const dynamic = "force-dynamic"
 
 export default async function Home() {
   const [education, skills, session, settings] = await Promise.all([
-    prisma.education.findMany({ orderBy: { startDate: "desc" } }),
-    prisma.skill.findMany({ orderBy: { category: "asc" } }),
+    prisma.education.findMany({ where: { deletedAt: null }, orderBy: { startDate: "desc" } }),
+    prisma.skill.findMany({ where: { deletedAt: null }, orderBy: { category: "asc" } }),
     getServerSession(authOptions),
     prisma.siteSettings.upsert({
       where: { id: "main" },
