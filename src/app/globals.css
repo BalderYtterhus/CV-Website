@@ -333,6 +333,16 @@ body {
 /* Horizontal divider */
 .cv-divider { border-color: var(--cv-border); }
 
+/* Mobile nav strip — hide scrollbar while keeping scroll functionality */
+.cv-nav-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.cv-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* Status badges */
 .cv-badge-ongoing {
   display: inline-flex;
